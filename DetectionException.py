@@ -47,12 +47,14 @@ for exception in rule_exceptions:
     entity_rule_action = entity.get("rule_action")
 
     structured_data.append({
-        "create_date": create_date,
+        "exception_create_date": create_date,
+        "detection_name": entity_name,
+        "detection_rule_action": entity_rule_action,
+
+        "exception_name": name,
+        "exception_rule_action": rule_action,
         "created_by": created_by,
-        "name": name,
-        "entity_name": entity_name,
-        "rule_action": rule_action,
-        "entity_rule_action": entity_rule_action
+
     })
 
 df = pd.DataFrame(structured_data)
