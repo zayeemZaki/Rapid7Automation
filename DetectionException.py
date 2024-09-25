@@ -42,21 +42,32 @@ for exception in rule_exceptions:
     name = exception.get("name")
     rule_action = exception.get("rule_action")
     
+    # Extract entity-level fields
     entity = exception.get("entity", {})
     entity_name = entity.get("name")
     entity_rule_action = entity.get("rule_action")
+    entity_priority_level = entity.get("priorityLevel")
 
+    # Extract root-level fields for priorityLevel and notes
+    priority_level = exception.get("priorityLevel")
+    notes = exception.get("notes", [])
+
+    # Collect all the extracted data
     structured_data.append({
         "exception_create_date": create_date,
         "detection_name": entity_name,
         "detection_rule_action": entity_rule_action,
-
+        "detection_priority_level": entity_priority_level,
         "exception_name": name,
         "exception_rule_action": rule_action,
+        "exception_priority_level": priority_level,
         "created_by": created_by,
-
+        "notes": "; ".join([note.get("value", "") for note in notes])
     })
 
+# Convert the list to a DataFrame
 df = pd.DataFrame(structured_data)
+
+# Save the DataFrame to a text file and a CSV file
 df.to_csv('rule_exceptions_output.txt', sep='\t', index=False)
 df.to_csv('rule_exceptions_output.csv', index=False)
