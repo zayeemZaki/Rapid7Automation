@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 API_KEY = "api key"
-url = "https://us.api.insight.rapid7.com/idr/v1/rules/rule-exceptions"
+url = "https://us3.api.insight.rapid7.com/idr/v1/rules/rule-exceptions"
 
 headers = {
     "X-Api-Key": API_KEY,
