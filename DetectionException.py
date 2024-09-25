@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 API_KEY = "api key"
 url = "https://us.api.insight.rapid7.com/idr/v1/rules/rule-exceptions"
@@ -32,7 +33,28 @@ def get_all_rule_exceptions():
    
     return exceptions
 
-
 rule_exceptions = get_all_rule_exceptions()
+
+structured_data = []
 for exception in rule_exceptions:
-    print(exception)
+    create_date = exception.get("create_date")
+    created_by = exception.get("created_by")
+    name = exception.get("name")
+    rule_action = exception.get("rule_action")
+    
+    entity = exception.get("entity", {})
+    entity_name = entity.get("name")
+    entity_rule_action = entity.get("rule_action")
+
+    structured_data.append({
+        "create_date": create_date,
+        "created_by": created_by,
+        "name": name,
+        "entity_name": entity_name,
+        "rule_action": rule_action,
+        "entity_rule_action": entity_rule_action
+    })
+
+df = pd.DataFrame(structured_data)
+df.to_csv('rule_exceptions_output.txt', sep='\t', index=False)
+df.to_csv('rule_exceptions_output.csv', index=False)
