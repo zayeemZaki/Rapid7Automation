@@ -48,8 +48,6 @@ for exception in rule_exceptions:
     entity_rule_action = entity.get("rule_action")
     entity_priority_level = entity.get("priorityLevel")
 
-    # Extract root-level fields for priorityLevel and notes
-    priority_level = exception.get("priorityLevel")
     notes = exception.get("notes", [])
 
     # Collect all the extracted data
@@ -60,7 +58,6 @@ for exception in rule_exceptions:
         "detection_priority_level": entity_priority_level,
         "exception_name": name,
         "exception_rule_action": rule_action,
-        "exception_priority_level": priority_level,
         "created_by": created_by,
         "notes": "; ".join([note.get("value", "") for note in notes])
     })
