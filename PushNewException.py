@@ -7,7 +7,8 @@ url = f"https://us.api.insight.rapid7.com/idr/v1/rules/{rule_rrn}/rule-exception
 headers = {
     "X-Api-Key": API_KEY,
     "Accept": "application/json",
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "Accept-version": "strong-force-preview"
 }
 
 payload = {
@@ -15,8 +16,15 @@ payload = {
     "rule_action": "OFF",
     "note": "This is a note for the new exception.",
     "priority_level": "LOW",
-    "type": "LEQL",
-    "value": "from(event_type = 'process_start_event') where osType = 'example_os'"
+    "type": "SIMPLE",
+    "value": [
+        {
+            "key": "osType",
+            "value": "Windows 11",
+            "operator": "IS",
+            "case_sensitive": True
+        }
+    ]
 }
 
 response = requests.post(url, headers=headers, json=payload)
