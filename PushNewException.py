@@ -19,8 +19,8 @@ payload = {
     "type": "SIMPLE",
     "value": [
         {
-            "key": "osType",
-            "value": "Windows 11",
+            "key": "source_account",
+            "value": "TESTUSER",
             "operator": "IS",
             "case_sensitive": True
         }
