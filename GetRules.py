@@ -17,7 +17,7 @@ def get_all_rules(base_url, headers):
     while True:
         params = {
             "size": size,
-            "position": position,
+            "position": position if position else None,
             "include_counts": "NONE"
         }
         response = requests.get(base_url, headers=headers, params=params)
@@ -29,7 +29,7 @@ def get_all_rules(base_url, headers):
         data = response.json()
         rules.extend(data.get('data', []))
 
-        position = data.get('position', None)
+        position = data.get('meta', {}).get('position', None)
         if not position:
             break
 
