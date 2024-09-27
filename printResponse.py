@@ -1,7 +1,7 @@
 import requests
 
-API_KEY = "api_key"
-base_url = "https://us3.api.insight.rapid7.com/idr/v1/rules"
+API_KEY = "api_key" 
+base_url = "https://us3.api.insight.rapid7.com/idr/v1/rules/_search"
 
 headers = {
     "X-Api-Key": API_KEY,
@@ -10,29 +10,36 @@ headers = {
     "Content-Type": "application/json"
 }
 
-def get_filtered_rules(base_url, headers):
-    filters = {
-        "filters": [
-            {
-                "type": "EQ",
-                "target": "rule_set",
-                "values": ["UBA"]
-            }
-        ],
-        "size": 1
-    }
+params = {
+    "size": 1,
+    "position": None,
+    "include_counts": "NONE"
+}
 
-    response = requests.post(f"{base_url}/_search", headers=headers, json=filters)
+body = {
+    "filters": [
+        {
+            "type": "IN",
+            "target": "rule_set",
+            "values": ["Legacy UBA"]
+        }
+    ],
+    "sortFieldOrders": [
+        {
+            "target": "rrn",
+            "order": "ASC"
+        }
+    ]
+}
 
-    if response.status_code == 200:
-        data = response.json()
-        print("Filtered Rules Response:")
-        print(data)
+response = requests.post(base_url, headers=headers, params=params, json=body)
+
+if response.status_code == 200:
+    data = response.json()
+    if data.get("data"):
+        print("First Filtered Rule:")
+        print(data["data"][0])
     else:
-        print(f"Failed to retrieve rules: {response.status_code} - {response.text}")
-
-try:
-    get_filtered_rules(base_url, headers)
-
-except requests.exceptions.RequestException as e:
-    print(f"Error retrieving filtered rules: {e}")
+        print("No Legacy UBA rules found.")
+else:
+    print(f"Failed to retrieve rules: {response.status_code} - {response.text}")
