@@ -29,7 +29,7 @@ def get_all_rules(base_url, headers):
         data = response.json()
         rules.extend(data.get('data', []))
 
-        position = data.get('meta', {}).get('position', None)
+        position = data.get('position', None)
         if not position:
             break
 
