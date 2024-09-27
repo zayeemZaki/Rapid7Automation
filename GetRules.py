@@ -42,10 +42,18 @@ try:
         for i, entry in enumerate(entries):
             name = entry.get('rule', {}).get('name', 'N/A')
             rrn = entry.get('rrn', 'N/A')
+            event_types = entry.get('event_types', [])
+            event_type_str = ", ".join(event_types) if event_types else "N/A"
+            
+            threats = entry.get('threats', [])
+            uba_migrated = next((threat.get('uba_migrated', 'N/A') for threat in threats if 'uba_migrated' in threat), 'N/A')
 
             file.write(f"Rule {i + 1}:\n")
             file.write(f"   Name: {name}\n")
-            file.write(f"   RRN: {rrn}\n\n")
+            file.write(f"   RRN: {rrn}\n")
+            file.write(f"   Type: {event_type_str}\n")
+            file.write(f"   Migrated: {uba_migrated}\n\n")
+
 
     print(f"Successfully wrote {len(entries)} rules to 'rules_output.txt'.")
 
