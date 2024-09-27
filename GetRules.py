@@ -17,7 +17,7 @@ def get_all_rules(base_url, headers):
     while True:
         params = {
             "size": size,
-            "position": position if position else None,
+            "position": position,
             "include_counts": "NONE"
         }
         response = requests.get(base_url, headers=headers, params=params)
@@ -29,19 +29,19 @@ def get_all_rules(base_url, headers):
         data = response.json()
         rules.extend(data.get('data', []))
 
-        position = data.get('meta', {}).get('position', None)
+        position = data.get('position', None)
         if not position:
             break
 
     return rules
 
 try:
-    all_rules = get_all_rules(base_url, headers)
-    rrns = [entry['rrn'] for entry in all_rules if 'rrn' in entry]
-
-    print("RRNs retrieved successfully:")
-    for rrn in rrns:
-        print(rrn)
+    entries = get_all_rules(base_url, headers)
+    for i, entry in enumerate(entries):
+        print("Rule ", i + 1)
+        print("   RRN: ", entry['rrn'])
+        print("   Name: ", entry['rule']['name'])
+        print()
 
 except requests.exceptions.RequestException as e:
     print(f"Error retrieving RRNs: {e}")
