@@ -1,4 +1,5 @@
 import requests
+import csv
 
 API_KEY = "api_key"
 base_url = "https://us3.api.insight.rapid7.com/idr/v1/rules"
@@ -38,7 +39,11 @@ def get_all_rules(base_url, headers):
 try:
     entries = get_all_rules(base_url, headers)
     
-    with open("rules_output.txt", "w") as file:
+    with open("rules_output.csv", "w", newline='') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(["Rule Number", "Name", "RRN", "Type", "Migrated"])
+
         for i, entry in enumerate(entries):
             name = entry.get('rule', {}).get('name', 'N/A')
             rrn = entry.get('rrn', 'N/A')
@@ -48,14 +53,9 @@ try:
             threats = entry.get('threats', [])
             uba_migrated = next((threat.get('uba_migrated', 'N/A') for threat in threats if 'uba_migrated' in threat), 'N/A')
 
-            file.write(f"Rule {i + 1}:\n")
-            file.write(f"   Name: {name}\n")
-            file.write(f"   RRN: {rrn}\n")
-            file.write(f"   Type: {event_type_str}\n")
-            file.write(f"   Migrated: {uba_migrated}\n\n")
+            writer.writerow([i + 1, name, rrn, event_type_str, uba_migrated])
 
-
-    print(f"Successfully wrote {len(entries)} rules to 'rules_output.txt'.")
+    print(f"Successfully wrote {len(entries)} rules to 'rules_output.csv'.")
 
 except requests.exceptions.RequestException as e:
     print(f"Error retrieving RRNs: {e}")
