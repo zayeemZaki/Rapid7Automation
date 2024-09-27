@@ -6,41 +6,33 @@ base_url = "https://us3.api.insight.rapid7.com/idr/v1/rules"
 headers = {
     "X-Api-Key": API_KEY,
     "Accept": "application/json",
-    "Accept-version": "strong-force-preview"
+    "Accept-version": "strong-force-preview",
+    "Content-Type": "application/json"
 }
 
-def get_all_rules(base_url, headers):
-    rules = []
-    position = ''
-    size = 100
+def get_filtered_rules(base_url, headers):
+    filters = {
+        "filters": [
+            {
+                "type": "EQ",
+                "target": "rule_set",
+                "values": ["UBA"]
+            }
+        ],
+        "size": 1
+    }
 
-    while True:
-        params = {
-            "size": size,
-            "position": position if position else None,
-            "include_counts": "NONE",
-            "rule_set": "UBA"
-        }
-        response = requests.get(base_url, headers=headers, params=params)
+    response = requests.post(f"{base_url}/_search", headers=headers, json=filters)
 
-        if response.status_code != 200:
-            print(f"Failed to retrieve rules: {response.status_code} - {response.text}")
-            break
-
+    if response.status_code == 200:
         data = response.json()
-
-        print("Full Response:")
-        print(response.json())
-        break 
-
-        position = data.get('meta', {}).get('position', None)
-        if not position:
-            break
-
-    return rules
+        print("Filtered Rules Response:")
+        print(data)
+    else:
+        print(f"Failed to retrieve rules: {response.status_code} - {response.text}")
 
 try:
-    get_all_rules(base_url, headers)
+    get_filtered_rules(base_url, headers)
 
 except requests.exceptions.RequestException as e:
-    print(f"Error retrieving RRNs: {e}")
+    print(f"Error retrieving filtered rules: {e}")
