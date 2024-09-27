@@ -18,7 +18,8 @@ def get_all_rules(base_url, headers):
         params = {
             "size": size,
             "position": position if position else None,
-            "include_counts": "NONE"
+            "include_counts": "NONE",
+            "rule_set": "UBA"
         }
         response = requests.get(base_url, headers=headers, params=params)
 
@@ -30,7 +31,7 @@ def get_all_rules(base_url, headers):
 
         print("Full Response:")
         print(response.json())
-        break
+        break 
 
         position = data.get('meta', {}).get('position', None)
         if not position:
