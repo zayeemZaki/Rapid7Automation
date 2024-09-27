@@ -37,11 +37,17 @@ def get_all_rules(base_url, headers):
 
 try:
     entries = get_all_rules(base_url, headers)
-    for i, entry in enumerate(entries):
-        print("Rule ", i + 1)
-        print("   RRN: ", entry['rrn'])
-        print("   Name: ", entry['rule']['name'])
-        print()
+    
+    with open("rules_output.txt", "w") as file:
+        for i, entry in enumerate(entries):
+            name = entry.get('rule', {}).get('name', 'N/A')
+            rrn = entry.get('rrn', 'N/A')
+
+            file.write(f"Rule {i + 1}:\n")
+            file.write(f"   Name: {name}\n")
+            file.write(f"   RRN: {rrn}\n\n")
+
+    print(f"Successfully wrote {len(entries)} rules to 'rules_output.txt'.")
 
 except requests.exceptions.RequestException as e:
     print(f"Error retrieving RRNs: {e}")
